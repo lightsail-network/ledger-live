@@ -147,6 +147,11 @@ const envDefinitions = {
     def: "https://stellar.coin.ledger.com",
     desc: "Stellar Horizon API url",
   },
+  API_STELLAR_HORIZON_INIT_FETCH_LIMIT: {
+    parser: intParser,
+    def: 1000,
+    desc: "The maximum number of operations obtained when importing an account.",
+  },
   API_STELLAR_HORIZON_FETCH_LIMIT: {
     parser: intParser,
     def: 100,
