@@ -6,6 +6,9 @@ import { inferSubOperations, encodeAccountId } from "@ledgerhq/coin-framework/ac
 import { STELLAR_BURN_ADDRESS } from "./logic";
 import { StellarBurnAddressError } from "./errors";
 import { StellarOperation } from "./types";
+import { getEnv } from "@ledgerhq/live-env";
+
+const LIMIT = getEnv("API_STELLAR_HORIZON_INIT_FETCH_LIMIT");
 
 const getAccountShape: GetAccountShape = async (info, syncConfig) => {
   const { address, currency, initialAccount, derivationMode } = info;
@@ -23,14 +26,17 @@ const getAccountShape: GetAccountShape = async (info, syncConfig) => {
   const { blockHeight, balance, spendableBalance, assets } = await fetchAccount(address);
 
   const oldOperations = (initialAccount?.operations || []) as StellarOperation[];
-  const lastPagingToken = oldOperations[0]?.extra.pagingToken || "0";
+  const lastPagingToken = oldOperations[0]?.extra.pagingToken || "now";
 
+  // If it is the first time to obtain, then obtain the latest `LIMIT` records.
+  // otherwise, according to the cursor, retrieve all records up to now.
   const newOperations =
     (await fetchOperations({
       accountId,
       addr: address,
-      order: "asc",
+      order: lastPagingToken === "now" ? "desc" : "asc",
       cursor: lastPagingToken,
+      opsLimit: lastPagingToken === "now" ? LIMIT : undefined,
     })) || [];
 
   const allOperations = mergeOps(oldOperations, newOperations) as StellarOperation[];

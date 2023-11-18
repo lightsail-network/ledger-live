@@ -158,6 +158,7 @@ export const fetchAccount = async (
  * @param {string} addr
  * @param {string} order - "desc" or "asc" order of returned records
  * @param {string} cursor - point to start fetching records
+ * @param {number} opsLimit - maximum number of records to fetch, it is worth noting that the returned ops may exceed this number.
  *
  * @return {Operation[]}
  */
@@ -166,11 +167,13 @@ export const fetchOperations = async ({
   addr,
   order,
   cursor,
+  opsLimit,
 }: {
   accountId: string;
   addr: string;
   order: "asc" | "desc";
   cursor: string;
+  opsLimit?: number;
 }): Promise<Operation[]> => {
   if (!addr) {
     return [];
@@ -198,6 +201,9 @@ export const fetchOperations = async ({
     );
 
     while (rawOperations.records.length > 0) {
+      if (opsLimit && operations.length >= opsLimit) {
+        break;
+      }
       rawOperations = await rawOperations.next();
       operations = operations.concat(
         await rawOperationsToOperations(rawOperations.records as RawOperation[], addr, accountId),
