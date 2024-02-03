@@ -1,5 +1,4 @@
 import { LedgerAPI4xx, LedgerAPI5xx, NetworkDown } from "@ledgerhq/errors";
-import { requestInterceptor, responseInterceptor } from "@ledgerhq/live-network/network";
 import type { Account, Operation } from "@ledgerhq/types-live";
 import { BigNumber } from "bignumber.js";
 import {
@@ -16,6 +15,7 @@ import {
   TransactionBuilder,
   Networks,
 } from "@stellar/stellar-sdk";
+import { log } from "@ledgerhq/logs";
 
 import { getCryptoCurrencyById, parseCurrencyUnit } from "../../../currencies";
 import { getEnv } from "@ledgerhq/live-env";
@@ -39,11 +39,18 @@ export const BASE_RESERVE = 0.5;
 export const BASE_RESERVE_MIN_COUNT = 2;
 export const MIN_BALANCE = 1;
 
+Horizon.AxiosClient.interceptors.request.use(config => {
+  if (!getEnv("ENABLE_NETWORK_LOGS")) {
+    return config;
+  }
 
-Horizon.AxiosClient.interceptors.request.use();
+  const { baseURL, url, method = "", data } = config;
+  log("network", `${method} ${baseURL || ""}${url}`, { data });
+
+  return config;
+});
 
 Horizon.AxiosClient.interceptors.response.use(response => {
-  responseInterceptor(response);
   // FIXME: workaround for the Stellar SDK not using the correct URL: the "next" URL
   // included in server responses points to the node itself instead of our reverse proxy...
   // (https://github.com/stellar/js-stellar-sdk/issues/637)
