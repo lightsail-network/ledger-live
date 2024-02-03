@@ -2,7 +2,7 @@ import type { CacheRes } from "@ledgerhq/live-network/cache";
 import { makeLRUCache } from "@ledgerhq/live-network/cache";
 import type { Account, OperationType, TokenAccount } from "@ledgerhq/types-live";
 import { BigNumber } from "bignumber.js";
-import { ServerApi, StrKey, MuxedAccount } from "stellar-sdk";
+import { Horizon, StrKey, MuxedAccount } from "@stellar/stellar-sdk";
 import { findSubAccountById } from "../../account";
 import { getCryptoCurrencyById, parseCurrencyUnit } from "../../currencies";
 import { encodeOperationId } from "../../operation";
@@ -25,13 +25,13 @@ export const STELLAR_BURN_ADDRESS = "GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 
 const currency = getCryptoCurrencyById("stellar");
 
-const getMinimumBalance = (account: ServerApi.AccountRecord): BigNumber => {
+const getMinimumBalance = (account: Horizon.ServerApi.AccountRecord): BigNumber => {
   return parseCurrencyUnit(currency.units[0], getReservedBalance(account).toString());
 };
 
 export const getAccountSpendableBalance = async (
   balance: BigNumber,
-  account: ServerApi.AccountRecord,
+  account: Horizon.ServerApi.AccountRecord,
 ): Promise<BigNumber> => {
   const minimumBalance = getMinimumBalance(account);
   const { recommendedFee } = await fetchBaseFee();
@@ -69,7 +69,7 @@ export const getBalanceId = (balance: BalanceAsset): string | null => {
   }
 };
 
-export const getReservedBalance = (account: ServerApi.AccountRecord): BigNumber => {
+export const getReservedBalance = (account: Horizon.ServerApi.AccountRecord): BigNumber => {
   const numOfSponsoringEntries = Number(account.num_sponsoring);
   const numOfSponsoredEntries = Number(account.num_sponsored);
 
@@ -201,7 +201,7 @@ export const formatOperation = async (
 
 const getValue = (
   operation: RawOperation,
-  transaction: ServerApi.TransactionRecord,
+  transaction: Horizon.ServerApi.TransactionRecord,
   type: OperationType,
 ): BigNumber => {
   let value = new BigNumber(0);
