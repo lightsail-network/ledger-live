@@ -1,5 +1,7 @@
 import { LedgerAPI4xx, LedgerAPI5xx, NetworkDown } from "@ledgerhq/errors";
 import type { Account, Operation } from "@ledgerhq/types-live";
+import {requestInterceptor, responseInterceptor} from "@ledgerhq/live-network/network"
+
 import { BigNumber } from "bignumber.js";
 import {
   // @ts-expect-error stellar-sdk ts definition missing?
@@ -39,25 +41,36 @@ export const BASE_RESERVE = 0.5;
 export const BASE_RESERVE_MIN_COUNT = 2;
 export const MIN_BALANCE = 1;
 
+// Due to the inconsistency between the axios version (1.6.5) used by `stellar-sdk`
+// and the version (0.26.1) used by `@ledgerhq/live-network/network`, it is not possible to use the interceptors 
+// provided by `@ledgerhq/live-network/network`.
 Horizon.AxiosClient.interceptors.request.use(config => {
   if (!getEnv("ENABLE_NETWORK_LOGS")) {
     return config;
   }
 
-  const { baseURL, url, method = "", data } = config;
-  log("network", `${method} ${baseURL || ""}${url}`, { data });
-
+  const { url, method, data } = config;
+  log("network", `${method} ${url}`, { data });
   return config;
 });
 
 Horizon.AxiosClient.interceptors.response.use(response => {
+  if (getEnv("ENABLE_NETWORK_LOGS")) {
+    const { url, method } = response.config;
+    log(
+      "network-success",
+      `${response.status} ${method} ${url}`,
+      { data: response.data },
+    );
+  }
+
   // FIXME: workaround for the Stellar SDK not using the correct URL: the "next" URL
   // included in server responses points to the node itself instead of our reverse proxy...
   // (https://github.com/stellar/js-stellar-sdk/issues/637)
-  const url = response?.data?._links?.next?.href;
+  const next_href = response?.data?._links?.next?.href;
 
-  if (url) {
-    const next = new URL(url);
+  if (next_href) {
+    const next = new URL(next_href);
     next.host = new URL(getEnv("API_STELLAR_HORIZON")).host;
     response.data._links.next.href = next.toString();
   }
