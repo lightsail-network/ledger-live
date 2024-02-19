@@ -27,13 +27,13 @@
   "types": "lib/Str.d.ts",
   "license": "Apache-2.0",
   "dependencies": {
-    "@ledgerhq/hw-transport": "workspace:^",
+    "@ledgerhq/hw-transport": "^6.30.3",
     "base32.js": "^0.1.0",
     "sha.js": "^2.3.6",
     "tweetnacl": "^1.0.3"
   },
   "devDependencies": {
-    "@ledgerhq/hw-transport-mocker": "workspace:^",
+    "@ledgerhq/hw-transport-mocker": "^6.28.3",
     "@types/jest": "^29.5.0",
     "@types/node": "^18.15.3",
     "documentation": "13.2.5",
