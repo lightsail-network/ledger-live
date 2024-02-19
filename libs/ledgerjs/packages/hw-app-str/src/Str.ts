@@ -28,6 +28,7 @@ const INS_GET_PK = 0x02;
 const INS_SIGN_TX = 0x04;
 const INS_GET_CONF = 0x06;
 const INS_SIGN_TX_HASH = 0x08;
+const INS_SIGN_SOROBAN_AUTHORATION = 0x0a;
 const INS_KEEP_ALIVE = 0x10;
 const APDU_MAX_SIZE = 150;
 const P1_FIRST_APDU = 0x00;
@@ -41,6 +42,7 @@ const SW_MULTI_OP = 0x6c25;
 const SW_NOT_ALLOWED = 0x6c66;
 const SW_UNSUPPORTED = 0x6d00;
 const SW_KEEP_ALIVE = 0x6e02;
+const SW_CUSTOM_CONTRACT_MODE_NOT_ENABLED = 0x6c67;
 const TX_MAX_SIZE = 1540;
 /**
  * Stellar API
@@ -210,7 +212,14 @@ export default class Str {
           i === 0 ? P1_FIRST_APDU : P1_MORE_APDU,
           i === apdus.length - 1 ? P2_LAST_APDU : P2_MORE_APDU,
           data,
-          [SW_OK, SW_CANCEL, SW_UNKNOWN_OP, SW_MULTI_OP, SW_KEEP_ALIVE],
+          [
+            SW_OK,
+            SW_CANCEL,
+            SW_UNKNOWN_OP,
+            SW_MULTI_OP,
+            SW_KEEP_ALIVE,
+            SW_CUSTOM_CONTRACT_MODE_NOT_ENABLED,
+          ],
         )
         .then(apduResponse => {
           const status = Buffer.from(apduResponse.slice(apduResponse.length - 2)).readUInt16BE(0);
@@ -236,6 +245,8 @@ export default class Str {
       } else if (status === SW_MULTI_OP) {
         // multi-operation transaction: attempt hash signing
         return this.signHash_private(path, hash(transaction));
+      } else if (status === SW_CUSTOM_CONTRACT_MODE_NOT_ENABLED) {
+        throw new Error("Custom contract mode is not enabled");
       } else {
         throw new Error("Transaction approval request was rejected");
       }
@@ -258,6 +269,91 @@ export default class Str {
   }> {
     checkStellarBip32Path(path);
     return this.signHash_private(path, hash);
+  }
+
+  /**
+   * sign a Stellar Soroban Authoration.
+   * @param path a path in BIP 32 format
+   * @param hashIdPreimage hashIdPreimage to sign. (ENVELOPE_TYPE_SOROBAN_AUTHORIZATION)
+   * @return an object with the signature and the status
+   * @example
+   * str.signSorobanAuthoration("44'/148'/0'", hashIdPreimage).then(o => o.signature)
+   */
+  signSorobanAuthoration(
+    path: string,
+    hashIdPreimage: Buffer,
+  ): Promise<{
+    signature: Buffer;
+  }> {
+    checkStellarBip32Path(path);
+
+    const apdus: Buffer[] = [];
+    let response;
+    const pathElts = splitPath(path);
+    const bufferSize = 1 + pathElts.length * 4;
+    const buffer = Buffer.alloc(bufferSize);
+    buffer[0] = pathElts.length;
+    pathElts.forEach(function (element, index) {
+      buffer.writeUInt32BE(element, 1 + 4 * index);
+    });
+    let chunkSize = APDU_MAX_SIZE - bufferSize;
+
+    if (hashIdPreimage.length <= chunkSize) {
+      // it fits in a single apdu
+      apdus.push(Buffer.concat([buffer, hashIdPreimage]));
+    } else {
+      // we need to send multiple apdus to transmit the entire hashIdPreimage
+      let chunk = Buffer.alloc(chunkSize);
+      let offset = 0;
+      hashIdPreimage.copy(chunk, 0, offset, chunkSize);
+      apdus.push(Buffer.concat([buffer, chunk]));
+      offset += chunkSize;
+
+      while (offset < hashIdPreimage.length) {
+        const remaining = hashIdPreimage.length - offset;
+        chunkSize = remaining < APDU_MAX_SIZE ? remaining : APDU_MAX_SIZE;
+        chunk = Buffer.alloc(chunkSize);
+        hashIdPreimage.copy(chunk, 0, offset, offset + chunkSize);
+        offset += chunkSize;
+        apdus.push(chunk);
+      }
+    }
+
+    let keepAlive = false;
+    return foreach(apdus, (data, i) =>
+      this.transport
+        .send(
+          CLA,
+          keepAlive ? INS_KEEP_ALIVE : INS_SIGN_SOROBAN_AUTHORATION,
+          i === 0 ? P1_FIRST_APDU : P1_MORE_APDU,
+          i === apdus.length - 1 ? P2_LAST_APDU : P2_MORE_APDU,
+          data,
+          [SW_OK, SW_CANCEL, SW_KEEP_ALIVE, SW_CUSTOM_CONTRACT_MODE_NOT_ENABLED],
+        )
+        .then(apduResponse => {
+          const status = Buffer.from(apduResponse.slice(apduResponse.length - 2)).readUInt16BE(0);
+
+          if (status === SW_KEEP_ALIVE) {
+            keepAlive = true;
+            apdus.push(Buffer.alloc(0));
+          }
+
+          response = apduResponse;
+        }),
+    ).then(() => {
+      const status = Buffer.from(response.slice(response.length - 2)).readUInt16BE(0);
+
+      if (status === SW_OK) {
+        const signature = Buffer.from(response.slice(0, response.length - 2));
+        return {
+          signature: signature,
+        };
+      } else if (status === SW_CUSTOM_CONTRACT_MODE_NOT_ENABLED) {
+        throw new Error("Custom contract mode is not enabled");
+      } else {
+        throw new Error("Soroban authoration approval request was rejected");
+      }
+    });
   }
 
   signHash_private(
