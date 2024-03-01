@@ -93,6 +93,10 @@ const signOperation: SignOperationFnSignature<Transaction> = ({ account, deviceI
             account.freshAddressPath,
             unsignedPayload,
           );
+
+          const data = Buffer.alloc(10);
+          const subarray = data.subarray(0, 5);
+
           unsigned.addSignature(account.freshAddress, signature.toString("base64"));
           o.next({
             type: "device-signature-granted",
@@ -102,7 +106,7 @@ const signOperation: SignOperationFnSignature<Transaction> = ({ account, deviceI
             type: "signed",
             signedOperation: {
               operation,
-              signature: Buffer.from(unsigned.toEnvelope().toXDR()).toString("base64"),
+              signature: subarray.toString("base64"),
             },
           });
         }
