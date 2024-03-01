@@ -30,7 +30,7 @@ import "@formatjs/intl-relativetimeformat/locale-data/ko";
 import "@azure/core-asynciterator-polyfill";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-global.Buffer = require("buffer").Buffer;
+global.Buffer = require("@overcat/buffer").Buffer;
 
 if (!console.assert) {
   // eslint-disable-next-line @typescript-eslint/no-empty-function
