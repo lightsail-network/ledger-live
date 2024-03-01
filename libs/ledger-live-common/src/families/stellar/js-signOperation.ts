@@ -102,7 +102,7 @@ const signOperation: SignOperationFnSignature<Transaction> = ({ account, deviceI
             type: "signed",
             signedOperation: {
               operation,
-              signature: unsigned.toXDR(),
+              signature: unsigned.toEnvelope().toXDR("base64"),
             },
           });
         }
