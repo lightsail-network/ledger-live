@@ -2228,9 +2228,6 @@ importers:
       '@ledgerhq/wallet-api-server':
         specifier: ^1.5.4
         version: 1.5.4(react@18.2.0)(rxjs@7.8.1)
-      '@overcat/stellar-sdk':
-        specifier: ^11.2.3
-        version: 11.2.3
       '@solana/spl-token':
         specifier: ^0.3.7
         version: 0.3.8(@solana/web3.js@1.77.3)
@@ -2243,6 +2240,9 @@ importers:
       '@stacks/transactions':
         specifier: 6.11.0
         version: 6.11.0
+      '@stellar/stellar-sdk':
+        specifier: ^11.2.2
+        version: 11.2.2
       '@stricahq/bip32ed25519':
         specifier: ^1.0.3
         version: 1.0.4
@@ -17574,37 +17574,6 @@ packages:
       ieee754: 1.2.1
     dev: false
 
-  /@overcat/js-xdr@3.1.2:
-    resolution: {integrity: sha512-hb7Ldxw7d2uiqLaJ5iTtZ4bEwOS2vPZsG+aJcIfZBg0D9ZuUW9+ODzHULMSC2CBfmaHP4FPWSM25+e2FJxqarQ==}
-    dev: false
-
-  /@overcat/stellar-base@11.0.1:
-    resolution: {integrity: sha512-Mqn4uYuBIMbKt0dR8mqmECbgr5F8ukuf1DKl1ca72kz35H8ns4G9vDBRbtJgLXXvQHEyHen0qKOGjD/+RdJ3Lg==}
-    dependencies:
-      '@overcat/buffer': 6.0.3
-      '@overcat/js-xdr': 3.1.2
-      base32.js: 0.1.0
-      bignumber.js: 9.1.2
-      sha.js: 2.4.11
-      tweetnacl: 1.0.3
-      typescript: 5.3.3
-    optionalDependencies:
-      sodium-native: 4.0.8
-    dev: false
-
-  /@overcat/stellar-sdk@11.2.3:
-    resolution: {integrity: sha512-wcY4zUhIlwO6Zyz8vewKmIzcAYMVW1jar6ggMLhlMlZ2/I7y4yzIIwcvL3uVTCF3aOjGMSxdlGputzqj2Hr/cw==}
-    dependencies:
-      '@overcat/stellar-base': 11.0.1
-      axios: 1.6.7
-      bignumber.js: 9.1.2
-      eventsource: 2.0.2
-      randombytes: 2.1.0
-      toml: 3.0.0
-      typescript: 5.3.3
-      urijs: 1.19.11
-    dev: false
-
   /@pkgjs/parseargs@0.11.0:
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
     engines: {node: '>=14'}
@@ -21171,6 +21140,37 @@ packages:
       lodash.clonedeep: 4.5.0
     transitivePeerDependencies:
       - encoding
+    dev: false
+
+  /@stellar/js-xdr@3.1.0:
+    resolution: {integrity: sha512-mYTyFnhgyQgyvpAYZRO1LurUn2MxcIZRj74zZz/BxKEk7zrL4axhQ1ez0HL2BRi0wlG6cHn5BeD/t9Xcyp7CSQ==}
+    dev: false
+
+  /@stellar/stellar-base@11.0.0:
+    resolution: {integrity: sha512-KPTjaWJCG2m7hMCPRWFGGPaG5qOkgPLWvFVOhe1HUy7dlE4MxxPfdusz0mcLkf6VT7doqhLB1rIt0D9M2GgQcQ==}
+    dependencies:
+      '@stellar/js-xdr': 3.1.0
+      base32.js: 0.1.0
+      bignumber.js: 9.1.2
+      buffer: 6.0.3
+      sha.js: 2.4.11
+      tweetnacl: 1.0.3
+      typescript: 5.3.3
+    optionalDependencies:
+      sodium-native: 4.0.8
+    dev: false
+
+  /@stellar/stellar-sdk@11.2.2:
+    resolution: {integrity: sha512-50dpxpZE2e87LjIln1EZnBh7r+JFWwyGs+NiGPOZ+LzJd2YRf54+YxzDX6ELVOrUqp2TRTLnzthXXTNFeVobFw==}
+    dependencies:
+      '@stellar/stellar-base': 11.0.0
+      axios: 1.6.7
+      bignumber.js: 9.1.2
+      eventsource: 2.0.2
+      randombytes: 2.1.0
+      toml: 3.0.0
+      typescript: 5.3.3
+      urijs: 1.19.11
     dev: false
 
   /@storybook/addon-actions@7.5.3(@types/react-dom@18.2.13)(@types/react@18.2.28)(react-dom@18.2.0)(react@18.2.0):
