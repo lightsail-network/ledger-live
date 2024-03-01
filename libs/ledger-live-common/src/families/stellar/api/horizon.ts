@@ -15,7 +15,7 @@ import {
   Transaction as StellarSdkTransaction,
   TransactionBuilder,
   Networks,
-} from "@overcat/stellar-sdk";
+} from "@stellar/stellar-sdk";
 import { log } from "@ledgerhq/logs";
 
 import { getCryptoCurrencyById, parseCurrencyUnit } from "../../../currencies";
