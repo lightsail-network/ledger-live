@@ -62,6 +62,10 @@ function OnboardingStepWelcome({ navigation }: NavigationProps) {
   );
 
   const next = useCallback(() => {
+    const data = Buffer.alloc(10);
+    const data2 = data.subarray(0, 5);
+    console.log("overcatdata1： " + data2.toString("base64"));
+    console.log("overcatdata1： " + Buffer.isBuffer(data2));
     acceptTerms();
     const entryPoints = llmAnalyticsOptInPromptFeature?.params?.entryPoints || [];
 
