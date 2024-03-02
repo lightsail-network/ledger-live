@@ -29,12 +29,9 @@ import "@formatjs/intl-relativetimeformat/locale-data/ko";
 // Fix error when adding Solana account
 import "@azure/core-asynciterator-polyfill";
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-global.Buffer = require("buffer").Buffer;
-
 if (!console.assert) {
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  console.assert = () => {};
+  console.assert = () => { };
 }
 
 process.browser = true; // for readable-stream/lib/_stream_writable.js
