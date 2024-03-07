@@ -249,7 +249,8 @@
     "utility-types": "^3.10.0",
     "varuint-bitcoin": "1.1.2",
     "winston": "^3.4.0",
-    "xstate": "^4.30.2"
+    "xstate": "^4.30.2",
+    "buffer": "^6.0.3"
   },
   "devDependencies": {
     "@ledgerhq/types-cryptoassets": "workspace:^",

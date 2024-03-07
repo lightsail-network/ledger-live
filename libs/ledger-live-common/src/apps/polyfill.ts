@@ -4,6 +4,7 @@ import semver from "semver";
 import { listCryptoCurrencies, findCryptoCurrencyById } from "@ledgerhq/cryptoassets";
 import { App, AppType, Application, ApplicationV2 } from "@ledgerhq/types-live";
 import type { CryptoCurrency, CryptoCurrencyId } from "@ledgerhq/types-cryptoassets";
+import { Buffer } from "buffer";
 const directDep = {};
 const reverseDep = {};
 
@@ -17,6 +18,16 @@ export const whitelistDependencies = [
   "Avalanche",
   "Avalanche Test",
 ];
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+global.Buffer = Buffer;
+if (!(Buffer.alloc(1).subarray(0, 1) instanceof Buffer)) {
+  Buffer.prototype.subarray = function subarray(start?: number, end?: number) {
+    const result = Uint8Array.prototype.subarray.call(this, start, end);
+    Object.setPrototypeOf(result, Buffer.prototype);
+    return result;
+  };
+}
 
 export function declareDep(name: string, dep: string): void {
   if (whitelistDependencies.includes(name)) {
