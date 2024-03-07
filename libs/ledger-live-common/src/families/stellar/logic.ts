@@ -2,7 +2,7 @@ import type { CacheRes } from "@ledgerhq/live-network/cache";
 import { makeLRUCache } from "@ledgerhq/live-network/cache";
 import type { Account, OperationType, TokenAccount } from "@ledgerhq/types-live";
 import { BigNumber } from "bignumber.js";
-import { Horizon, StrKey, MuxedAccount } from "@stellar/stellar-sdk";
+import { Horizon, StrKey, MuxedAccount } from "@overcat/stellar-sdk";
 import { findSubAccountById } from "../../account";
 import { getCryptoCurrencyById, parseCurrencyUnit } from "../../currencies";
 import { encodeOperationId } from "../../operation";
