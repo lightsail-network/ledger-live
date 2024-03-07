@@ -31,6 +31,13 @@ import "@azure/core-asynciterator-polyfill";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 global.Buffer = require("buffer").Buffer;
+if (!(Buffer.alloc(1).subarray(0, 1) instanceof Buffer)) {
+  Buffer.prototype.subarray = function subarray(start?: number, end?: number) {
+    const result = Uint8Array.prototype.subarray.call(this, start, end);
+    Object.setPrototypeOf(result, Buffer.prototype);
+    return result;
+  };
+}
 
 if (!console.assert) {
   // eslint-disable-next-line @typescript-eslint/no-empty-function
