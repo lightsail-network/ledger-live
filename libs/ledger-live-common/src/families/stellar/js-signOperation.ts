@@ -84,10 +84,8 @@ const signOperation: SignOperationFnSignature<Transaction> = ({ account, deviceI
           if (!transaction.fees) {
             throw new FeeNotLoaded();
           }
-
           const unsigned = await buildTransaction(account, transaction);
           const unsignedPayload: Buffer = Buffer.from(unsigned.signatureBase());
-          // Sign by device
           const hwApp = new Stellar(transport);
           const { signature } = await hwApp.signTransaction(
             account.freshAddressPath,

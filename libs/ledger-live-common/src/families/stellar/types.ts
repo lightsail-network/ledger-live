@@ -1,4 +1,4 @@
-import { Horizon } from "@stellar/stellar-sdk";
+import { Horizon } from "@overcat/stellar-sdk";
 import type { BigNumber } from "bignumber.js";
 import type {
   Operation,
