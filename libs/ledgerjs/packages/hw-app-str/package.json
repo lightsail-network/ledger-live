@@ -28,9 +28,8 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@ledgerhq/hw-transport": "workspace:^",
-    "base32.js": "^0.1.0",
-    "sha.js": "^2.3.6",
-    "tweetnacl": "^1.0.3"
+    "@ledgerhq/errors": "workspace:^",
+    "bip32-path": "^0.4.2"
   },
   "devDependencies": {
     "@ledgerhq/hw-transport-mocker": "workspace:^",
