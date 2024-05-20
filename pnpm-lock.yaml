@@ -3795,18 +3795,15 @@ importers:
 
   libs/ledgerjs/packages/hw-app-str:
     dependencies:
+      '@ledgerhq/errors':
+        specifier: workspace:^
+        version: link:../errors
       '@ledgerhq/hw-transport':
         specifier: workspace:^
         version: link:../hw-transport
-      base32.js:
-        specifier: ^0.1.0
-        version: 0.1.0
-      sha.js:
-        specifier: ^2.3.6
-        version: 2.4.11
-      tweetnacl:
-        specifier: ^1.0.3
-        version: 1.0.3
+      bip32-path:
+        specifier: ^0.4.2
+        version: 0.4.2
     devDependencies:
       '@ledgerhq/hw-transport-mocker':
         specifier: workspace:^
@@ -12553,7 +12550,7 @@ packages:
   /@cardano-foundation/ledgerjs-hw-app-cardano@6.0.1:
     resolution: {integrity: sha512-35LU2482b6mGA8NVhCut5sEid0zqy82lXmgoenkQfDxDJtx7zV6U7/Dx9OjuDLpcedEUm/7s2WPjjHv/lsinIQ==}
     dependencies:
-      '@ledgerhq/hw-transport': 6.30.0
+      '@ledgerhq/hw-transport': 6.30.6
       base-x: 3.0.9
       bech32: 1.1.4
       int64-buffer: 1.0.1
@@ -15761,8 +15758,6 @@ packages:
       metro-core: '*'
       minimatch: '*'
     peerDependenciesMeta:
-      '@expo/metro-config':
-        optional: true
       glob:
         optional: true
       metro:
@@ -15852,8 +15847,6 @@ packages:
       metro-core: '*'
       minimatch: '*'
     peerDependenciesMeta:
-      '@expo/metro-config':
-        optional: true
       glob:
         optional: true
       metro:
@@ -18135,10 +18128,6 @@ packages:
     resolution: {integrity: sha512-gu6aJ/BHuRlpU7kgVpy2vcYk6atjB4iauP2ymF7Gk0ez0Y/6VSMVSJvubeEQN+IV60+OBK0JgeIZG7OiHaw8ow==}
     dev: false
 
-  /@ledgerhq/errors@6.16.0:
-    resolution: {integrity: sha512-vnew6lf4jN6E+WI0DFhD4WY0uM8LYL8HCumtUr86hNwvmEfebi7LxxpJGmYfVQD5TgEC7NibYnQ+2q9XWAc02A==}
-    dev: false
-
   /@ledgerhq/errors@6.16.4:
     resolution: {integrity: sha512-M57yFaLYSN+fZCX0E0zUqOmrV6eipK+s5RhijHoUNlHUqrsvUz7iRQgpd5gRgHB5VkIjav7KdaZjKiWGcHovaQ==}
     dev: false
@@ -18180,7 +18169,7 @@ packages:
     resolution: {integrity: sha512-hnE4/Fq1YzQI4PA1W0H8tCkI99R3UWDb3pJeZd6/Xs4Qw/q1uiQO+vNLC6KIPPhK0IajUfuI/P2jk0qWcMsuAQ==}
     dependencies:
       '@ledgerhq/devices': link:libs/ledgerjs/packages/devices
-      '@ledgerhq/errors': 6.16.0
+      '@ledgerhq/errors': 6.16.4
       events: 3.3.0
     dev: false
 
@@ -18188,16 +18177,7 @@ packages:
     resolution: {integrity: sha512-RaZe+abn0zBIz82cE9tp7Y7aZkHWWbEaE2yJpfxT8AhFz3fx+BU0kLYzuRN9fmA7vKueNJ1MTVUCY+Ex9/CHSQ==}
     dependencies:
       '@ledgerhq/devices': link:libs/ledgerjs/packages/devices
-      '@ledgerhq/errors': 6.16.0
-      events: 3.3.0
-    dev: false
-
-  /@ledgerhq/hw-transport@6.30.0:
-    resolution: {integrity: sha512-wrAwn/wCAaGP2Yuy78cLyqmQNzbuDvUv4gJYF/UO4djvUz0jjvD2w5kxRWxF/W93vyKT+/RplRtFk3CJzD3e3A==}
-    dependencies:
-      '@ledgerhq/devices': link:libs/ledgerjs/packages/devices
-      '@ledgerhq/errors': 6.16.0
-      '@ledgerhq/logs': 6.12.0
+      '@ledgerhq/errors': 6.16.4
       events: 3.3.0
     dev: false
 
@@ -21290,9 +21270,6 @@ packages:
 
   /@react-native-community/cli-tools@11.3.7:
     resolution: {integrity: sha512-peyhP4TV6Ps1hk+MBHTFaIR1eI3u+OfGBvr5r0wPwo3FAJvldRinMgcB/TcCcOBXVORu7ba1XYjkubPeYcqAyA==}
-    peerDependenciesMeta:
-      find-up:
-        optional: true
     dependencies:
       appdirsjs: 1.2.6
       chalk: 4.1.2
@@ -21308,9 +21285,6 @@ packages:
 
   /@react-native-community/cli-tools@11.3.9:
     resolution: {integrity: sha512-qWEUo/HQll/aj5xHYCw6itXGkPgultxTHa4UYSaBIRSfU15aSiwonJ/JP7fe+fHKbaFh6IdhaaRhj4ArfEOxuQ==}
-    peerDependenciesMeta:
-      find-up:
-        optional: true
     dependencies:
       appdirsjs: 1.2.6
       chalk: 4.1.2
@@ -25701,7 +25675,7 @@ packages:
     resolution: {integrity: sha512-gyBO8FarBrItPGAfrnm4J7vrIWMsr9xqgfzgN4PAqY7eEmL8MDuZtdpk6B6DBuJ3hYbqxvOEa0QPhNzBxnGPeA==}
     engines: {node: '>=6.0.0'}
     dependencies:
-      '@ledgerhq/hw-transport': 6.30.0
+      '@ledgerhq/hw-transport': 6.30.6
       '@stablelib/blake2b': 1.0.1
       '@taquito/taquito': 13.0.1
       '@taquito/utils': 13.0.1
@@ -28686,7 +28660,7 @@ packages:
     resolution: {integrity: sha512-Zk+DOVK9G9Gyt7ua9x/G5iVVSlNfp1l+Tek+7+MoqP5aTr4YznBJIhdnPD8yYSxEEZZLs8Q0tV0TyfsXeRokQw==}
     dependencies:
       '@babel/runtime': 7.23.2
-      '@ledgerhq/hw-transport': 6.30.0
+      '@ledgerhq/hw-transport': 6.30.6
       '@types/ledgerhq__hw-transport': 4.21.4
     dev: false
 
@@ -28812,7 +28786,7 @@ packages:
     resolution: {integrity: sha512-RsUToV/ctEHrhBc87/xCC4Ft1vleiNQeaLp0GFYUDGBes0RrW3dcTDYMsR9+Bx7TYyNpTHkvBub8UVhz4ItFMQ==}
     dependencies:
       '@babel/runtime': 7.23.2
-      '@ledgerhq/hw-transport': 6.30.0
+      '@ledgerhq/hw-transport': 6.30.6
       '@stacks/transactions': 4.3.8
       varuint-bitcoin: 1.1.2
     transitivePeerDependencies:
@@ -29047,9 +29021,6 @@ packages:
 
   /ajv-formats@2.1.1:
     resolution: {integrity: sha512-Wx0Kx52hxE7C18hkMEggYlEifqWZtYaRgouJor+WMdPnQyEK13vgEWyVNup7SoeeoLMsr4kf5h6dOW11I15MUA==}
-    peerDependenciesMeta:
-      ajv:
-        optional: true
     dependencies:
       ajv: 8.12.0
 
@@ -37509,7 +37480,6 @@ packages:
       is-hex-prefixed: 1.0.0
       strip-hex-prefix: 1.0.0
     dev: false
-    bundledDependencies: false
 
   /ev-emitter@1.1.1:
     resolution: {integrity: sha512-ipiDYhdQSCZ4hSbX4rMW+XzNKMD1prg/sTvoVmSLkuQ1MVlwjJQQA+sW8tMYR3BLUr9KjodFV4pvzunvRhd33Q==}
@@ -37746,8 +37716,6 @@ packages:
       react-native: '*'
     peerDependenciesMeta:
       expo-constants:
-        optional: true
-      expo-file-system:
         optional: true
       expo-modules-core:
         optional: true
