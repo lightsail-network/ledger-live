@@ -245,3 +245,5 @@ const serializePath = (path: number[]) => {
   }
   return buf;
 };
+
+export * from "./errors";
