@@ -107,12 +107,12 @@ export default class Str {
   async getPublicKey(path: string, display = false): Promise<{ rawPublicKey: Buffer }> {
     const pathBuffer = pathToBuffer(path);
     const p2 = display ? P2_CONFIRM : P2_NON_CONFIRM;
-    return await this.transport
-      .send(CLA, INS_GET_PK, P1_FIRST, p2, pathBuffer)
-      .then(data => ({ rawPublicKey: data.slice(0, -2) }))
-      .catch(e => {
-        throw remapErrors(e);
-      });
+    try {
+      const data = await this.transport.send(CLA, INS_GET_PK, P1_FIRST, p2, pathBuffer);
+      return { rawPublicKey: data.slice(0, -2) };
+    } catch (e) {
+      throw remapErrors(e);
+    }
   }
 
   /**
@@ -231,7 +231,7 @@ const remapErrors = e => {
 const pathToBuffer = (originalPath: string) => {
   const path = originalPath
     .split("/")
-    .map(value => (value.endsWith("'") || value.endsWith("h") ? value : value + "'"))
+    .map(value => (value.endsWith("'") || value.endsWith("h") ? value : `${value}'`))
     .join("/");
   const pathNums: number[] = BIPPath.fromString(path).toPathArray();
   return serializePath(pathNums);
