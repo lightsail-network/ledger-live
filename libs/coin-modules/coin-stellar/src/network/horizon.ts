@@ -183,12 +183,13 @@ export async function fetchAccount(addr: string): Promise<{
 }
 
 /**
- * Fetch all operations for a single account from indexer
+ * Fetch operations for a single account from indexer
  *
  * @param {string} accountId
  * @param {string} addr
  * @param {string} order - "desc" or "asc" order of returned records
  * @param {string} cursor - point to start fetching records
+ * @param {number} maxOperations - maximum number of operations to return, stops fetching after reaching this threshold
  *
  * @return {Operation[]}
  */
@@ -197,11 +198,13 @@ export async function fetchAllOperations({
   addr,
   order,
   cursor = "0",
+  maxOperations,
 }: {
   accountId: string;
   addr: string;
   order: "asc" | "desc";
   cursor: string | undefined;
+  maxOperations: number | undefined;
 }): Promise<StellarOperation[]> {
   if (!addr) {
     return [];
@@ -229,6 +232,9 @@ export async function fetchAllOperations({
     );
 
     while (rawOperations.records.length > 0) {
+      if (maxOperations && operations.length >= maxOperations) {
+        break;
+      }
       rawOperations = await rawOperations.next();
       operations = operations.concat(
         await rawOperationsToOperations(rawOperations.records as RawOperation[], addr, accountId),

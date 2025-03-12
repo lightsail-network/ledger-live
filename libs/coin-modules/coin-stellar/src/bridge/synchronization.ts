@@ -8,6 +8,7 @@ import { StellarBurnAddressError, StellarOperation } from "../types";
 import { STELLAR_BURN_ADDRESS } from "./logic";
 
 export const getAccountShape: GetAccountShape<Account> = async (info, syncConfig) => {
+  console.log("overcat, syncConfig", syncConfig);
   const { address, currency, initialAccount, derivationMode } = info;
 
   // FIXME Workaround for burn address, see https://ledgerhq.atlassian.net/browse/LIVE-4014
@@ -24,13 +25,15 @@ export const getAccountShape: GetAccountShape<Account> = async (info, syncConfig
   const { blockHeight, balance, spendableBalance, assets } = await fetchAccount(address);
 
   const oldOperations = (initialAccount?.operations || []) as StellarOperation[];
+  const lastPagingToken = oldOperations[0]?.extra.pagingToken || "0";
 
   const newOperations =
     (await fetchAllOperations({
       accountId,
       addr: address,
-      order: "asc",
-      cursor: oldOperations[0]?.extra.pagingToken,
+      order: lastPagingToken === "0" ? "desc" : "asc",
+      cursor: lastPagingToken,
+      maxOperations: lastPagingToken === "0" ? 1000 : undefined,
     })) || [];
 
   const allOperations = mergeOps(oldOperations, newOperations) as StellarOperation[];
